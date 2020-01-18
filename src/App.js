@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+
+import countryFetcherHook from './hooks/countryFetcherHook';
 import Input from './components/Input';
 
 function App() {
     const [countries, setCountries] = useState([]);
     const [filter, setfilter] = useState('');
 
-    const hook = () => {
-        axios
-            .get('https://restcountries.eu/rest/v2/all')
-            .then(response => {
-                console.log('promisse fullfiled');
-                setCountries(response.data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    };
-
-    useEffect(hook, []);
+    useEffect(
+        countryFetcherHook(
+            'https://restcountries.eu/rest/v2/all',
+            setCountries
+        ),
+        []
+    );
 
     const handleInputChange = event => {
         setfilter(event.target.value);
@@ -28,6 +23,7 @@ function App() {
         const filteredCountries = countries.filter(country => {
             return country.name.toLowerCase().includes(filter.toLowerCase());
         });
+
         if (filteredCountries.length > 10) {
             return <p>Too many matches, especify another letter!</p>;
         } else if (filteredCountries.length === 1) {
