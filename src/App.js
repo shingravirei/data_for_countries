@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 import countryFetcherHook from './hooks/countryFetcherHook';
 import Input from './components/Input';
+import Country from './components/Country';
+import CountriesList from './components/CountriesList';
 
 function App() {
     const [countries, setCountries] = useState([]);
-    const [filter, setfilter] = useState('');
+    const [filter, setFilter] = useState('');
 
     useEffect(
         countryFetcherHook(
@@ -16,7 +18,11 @@ function App() {
     );
 
     const handleInputChange = event => {
-        setfilter(event.target.value);
+        setFilter(event.target.value);
+    };
+
+    const handleOnClick = (countryName, setFilter) => () => {
+        setFilter(countryName);
     };
 
     const countryRender = countries => {
@@ -27,28 +33,16 @@ function App() {
         if (filteredCountries.length > 10) {
             return <p>Too many matches, especify another letter!</p>;
         } else if (filteredCountries.length === 1) {
-            return (
-                <>
-                    <h1>{filteredCountries[0].name}</h1>
-                    <p>Capital: {filteredCountries[0].capital}</p>
-                    <p>Population : {filteredCountries[0].population}</p>
-                    <h3>Languages</h3>
-                    {filteredCountries[0].languages.map(language => (
-                        <p key={language.nativeName}>{language.name}</p>
-                    ))}
-                    <img
-                        src={filteredCountries[0].flag}
-                        alt={'flag'}
-                        width={'15%'}
-                        height={'15%'}
-                    />
-                </>
-            );
+            return <Country country={filteredCountries} />;
         }
 
-        return filteredCountries.map(country => (
-            <p key={country.alpha3Code}>{country.name}</p>
-        ));
+        return (
+            <CountriesList
+                countriesList={filteredCountries}
+                handleOnClick={handleOnClick}
+                setFilter={setFilter}
+            />
+        );
     };
 
     return (
