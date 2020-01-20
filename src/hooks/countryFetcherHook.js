@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const countryFetcherHook = (uri, setCountries) => {
+const countryFetcherHook = (url, setCountries) => {
     return () => {
         axios
-            .get(uri)
+            .get(url)
             .then(response => {
                 console.log('promisse fullfiled');
                 setCountries(response.data);
